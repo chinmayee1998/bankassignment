@@ -1,0 +1,142 @@
+
+import Foundation
+class BankAccount {
+  var accountHolderName: String 
+  var balance: Double 
+  var accountNumber: Int64 
+  var interestRate: Double 
+  var type: String
+  var subType: String
+  var termOfDeposit: Double
+ var transaction:[(String, Double,String)] = [] 
+  init(accountHolderName: String, balance: Double, accountNumber: Int64, type: String, subType: String, rate:Double, termOfDeposit:Double) {
+  self.accountHolderName = accountHolderName
+  self.balance = balance
+  self.accountNumber = accountNumber
+  self.interestRate = rate
+  self.type = type
+  self.subType = subType
+  self.termOfDeposit = termOfDeposit
+  }
+  
+  func deposit (amount: Double) {
+     if(self.subType != "Fixed") {
+      self.balance += amount;
+      self.transaction.append(("Deposit", amount,"Balance: \(self.balance)"))
+    } else {
+      print("Fixed Deopsit Account: Multiple Deposits Not Allowed")
+    }
+  }
+  
+  func withdraw(amount: Double) {
+    if(self.subType == "Savings" || self.subType == "Current") {
+      self.balance -= amount;
+      self.transaction.append(("Withdrawal", amount,"Balance: \(self.balance)"))
+    } else {
+      print("Amount Cannot be Withdrawn From this Type")
+    }
+  }
+  
+  func viewDetails() {
+    print("Name of the holder : \(self.accountHolderName)")
+    print("Account Number : \(self.accountNumber)")
+    print("Typr Of Account: \(self.type)")
+    print("Current Balance: Rs.\(self.balance)")
+}
+  func printStatement()  {
+    if (self.type == "CaSa" || self.subType == "recurring"||self.type == "loan") {
+    print("\nLast 10 Transactions of Your Account\n\n")
+      var j = 1
+      while transaction.count - j >= 0 && j <= 10 {
+        print(self.transaction[transaction.count - j])
+        j += 1
+      }
+    } else {
+      print("statement not available for this account type")
+    }
+  }
+ 
+
+}
+var accountManager = [BankAccount]()
+class Manager {
+  func accountDetails (account:BankAccount) {
+    print("Name of the holder : \(account.accountHolderName)")
+    print("Account Number : \(account.accountNumber)")
+    print("Typr Of Account: \(account.type)")
+    print("Current Balance: Rs.\(account.balance)")
+}
+ func viewBalance (account: BankAccount) {
+    print("Current Balance: Rs.\(account.balance)")
+ }
+  func deposit (account: BankAccount,amount: Double)  {
+     if(account.subType != "Fixed") {
+      account.balance += amount;
+      account.transaction.append(("Deposit by Manager", amount,"Balance: \(account.balance)"))
+    } else {
+      print("Fixed Deopsit Account: Multiple Deposits Not Allowed")
+    }
+  }
+  
+  func withdraw(account: BankAccount,amount: Double) {
+    if(account.subType == "Savings" || account.subType == "Current") {
+      account.balance -= amount;
+     account.transaction.append(("Withdrawal by Manager",amount,"Balance: \(account.balance)"))
+    } else {
+      print("Transaction not supported for this account")
+    }
+  }
+
+  func printStatement(account: BankAccount)  {
+    print("\nLast 10 Transactions of \(account.accountHolderName)\n\n")
+      var j = 1
+      while account.transaction.count - j >= 0 && j <= 10 {
+        print(account.transaction[account.transaction.count - j])
+        j += 1
+      }
+    } 
+    func accruingInterestAdd(account:BankAccount) {
+   if(account.type == "Deposit") {
+     let interestAmount = account.balance * account.interestRate * account.termOfDeposit
+     account.balance += interestAmount
+     account.transaction.append(("Accruing Interest",interestAmount,"Balance: \(account.balance)"))
+   } else {
+     let interestAmount = (account.balance	*	account.interestRate	/	365) 
+     	account.balance	=	account.balance	+ interestAmount	
+  account.transaction.append(("Accruing Interest",interestAmount,"Balance: \(account.balance)"))
+   }
+
+ }
+
+}
+accountManager.append(BankAccount(accountHolderName: "Chinmayee",balance: 2500, accountNumber: 1234567898765,type: "CaSa", subType: "Current",rate:8,termOfDeposit:5))
+print(accountManager[0].balance)
+accountManager[0].withdraw(amount:1000)
+accountManager[0].withdraw(amount:1000)
+accountManager[0].deposit(amount:1000)
+
+
+var m = Manager()
+m.deposit(account: accountManager[0], amount: 1500)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:2000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:3000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+m.accruingInterestAdd(account:accountManager[0])
+m.accruingInterestAdd(account:accountManager[0])
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].withdraw(amount:1000)
+accountManager[0].deposit(amount:1000)
+accountManager[0].deposit(amount:1000)
+m.printStatement(account:accountManager[0])
